@@ -1,8 +1,12 @@
 import './App.css';
-import Searchbar from './components/Searchbar'
 import React, { Component } from 'react';
 import imageApi from './cervices/imageApi';
+import Searchbar from './components/Searchbar'
+import ImageGallery from './components/Imagegallery'
+
 import Modal from './components/Modal';
+import Loader from "react-loader-spinner";
+
 
 
 // const API_KEY = '21313596-53d18e4a7f22f2d08b7d5fbe5';
@@ -24,6 +28,12 @@ class App extends Component {
 
   onOpenModal = (e) => {
     this.setState({modalImg: e.target.dataset.source, showModal: true})
+  }
+
+  onCloseModal = (e) => {
+    if (e.target.nodeName !== 'IMG') {
+      this.setState({showModal: false, modalImg: ''})
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -83,24 +93,18 @@ class App extends Component {
         <div className="App">
           {error && <h1>Error!!!</h1>}
           <Searchbar onSubmit={this.onChangeQuery} />
-         
-      <ul className="ImageGallery" id='imagesList'>
-        {pictures.map(({ id, webformatURL, user, largeImageURL,onOpenModal }) =>
-          <li key={id} onClick = {onOpenModal} className="ImageGalleryItem" >
-            <img src={webformatURL}
-              alt={user}
-              data-source={largeImageURL}
-              onOpenModal={onOpenModal}
-              className="ImageGalleryItem-image" />
-          </li>)}
-      </ul>
-       {isLoading && <h1>Загружаем...</h1>}
+          <ImageGallery pictures={pictures} onOpenModal={this.onOpenModal}/>
+      
+          {isLoading && <div style = {{position: 'fixed', top: '50%', left: "50%", transform: "translate(-50%, -50%)"}}>
+            <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} timeout={3000} />
+          </div>}
+          
 
           {shoultdRenderLoadMoreButton && (<button className="Button" onClick={this.fetchPictures} type="button">
             Load more
           </button>
           )}
-          {/* {this.state.showModal && <Modal  modalImg= {this.state.modalImg} />} */}
+          {this.state.showModal && <Modal modalImg={this.state.modalImg} onCloseModal={this.onCloseModal}/>}
         </div>
     </>
   );
