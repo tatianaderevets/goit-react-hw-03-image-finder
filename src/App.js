@@ -6,6 +6,7 @@ import ImageGallery from './components/Imagegallery'
 
 import Modal from './components/Modal';
 import Loader from "react-loader-spinner";
+import Button from './components/Button';
 
 
 
@@ -15,7 +16,7 @@ import Loader from "react-loader-spinner";
 
 
 class App extends Component {
-  
+
   state = {
     pictures: [],
     currentPage: 1,
@@ -27,12 +28,12 @@ class App extends Component {
   };
 
   onOpenModal = (e) => {
-    this.setState({modalImg: e.target.dataset.source, showModal: true})
+    this.setState({ modalImg: e.target.dataset.source, showModal: true })
   }
 
   onCloseModal = (e) => {
     if (e.target.nodeName !== 'IMG') {
-      this.setState({showModal: false, modalImg: ''})
+      this.setState({ showModal: false, modalImg: '' })
     }
   }
 
@@ -46,13 +47,13 @@ class App extends Component {
     this.setState({ searchQuery: query, currentPage: 1, pictures: [], error: null, });
     // console.log(query);
 
-   
-    
+
+
   };
 
   fetchPictures = () => {
     const { currentPage, searchQuery } = this.state;
-    
+
     const options = {
       searchQuery,
       currentPage,
@@ -62,22 +63,23 @@ class App extends Component {
 
     imageApi.fetchPictures(options)
       .then(hits => {
-        
+
         // console.log(response.data.hits)
         this.setState(prevState => ({
           pictures: [...prevState.pictures, ...hits],
           currentPage: prevState.currentPage + 1,
         }));
       }).catch(error => this.setState({ error }))
-      .finally(() => {this.setState({ isLoading: false })
-      window.scrollTo({
-        top: document.querySelector('#imagesList').scrollHeight,
-        behavior: 'smooth',
+      .finally(() => {
+        this.setState({ isLoading: false })
+        window.scrollTo({
+          top: document.querySelector('#imagesList').scrollHeight,
+          behavior: 'smooth',
+        });
       });
-  });
-    
 
-    
+
+
   }
 
 
@@ -89,27 +91,26 @@ class App extends Component {
     const shoultdRenderLoadMoreButton = pictures.length > 0 && !isLoading;
 
     return (
-    <>
+      <>
         <div className="App">
           {error && <h1>Error!!!</h1>}
           <Searchbar onSubmit={this.onChangeQuery} />
-          <ImageGallery pictures={pictures} onOpenModal={this.onOpenModal}/>
-      
-          {isLoading && <div style = {{position: 'fixed', top: '50%', left: "50%", transform: "translate(-50%, -50%)"}}>
+          <ImageGallery pictures={pictures} onOpenModal={this.onOpenModal} />
+
+          {isLoading && <div style={{ position: 'fixed', top: '50%', left: "50%", transform: "translate(-50%, -50%)" }}>
             <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} timeout={3000} />
           </div>}
-          
 
-          {shoultdRenderLoadMoreButton && (<button className="Button" onClick={this.fetchPictures} type="button">
-            Load more
-          </button>
-          )}
-          {this.state.showModal && <Modal modalImg={this.state.modalImg} onCloseModal={this.onCloseModal}/>}
+
+          {shoultdRenderLoadMoreButton && <Button onClick={this.fetchPictures} text={"Load more"}/>
+            
+          }
+          {this.state.showModal && <Modal modalImg={this.state.modalImg} onCloseModal={this.onCloseModal} />}
         </div>
-    </>
-  );
-}
-  
+      </>
+    );
+  }
+
 }
 
 export default App;

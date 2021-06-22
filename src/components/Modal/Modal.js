@@ -1,8 +1,13 @@
 import React from 'react';
 import { Component } from 'react';
+import PropTypes from "prop-types"
 
 
 class Modal extends Component {
+
+     static propTypes = {
+    onCloseModal: PropTypes.func,
+  }
 
     componentDidMount() {
         window.addEventListener('keydown', (e) => {
