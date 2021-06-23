@@ -10,10 +10,6 @@ import Button from './components/Button';
 
 
 
-// const API_KEY = '21313596-53d18e4a7f22f2d08b7d5fbe5';
-// const BASE_URL = 'https://pixabay.com/api/';
-// https://pixabay.com/api/?q=что_искать&page=номер_страницы&key=твой_ключ&image_type=photo&orientation=horizontal&per_page=12
-
 
 class App extends Component {
 
@@ -72,10 +68,11 @@ class App extends Component {
       }).catch(error => this.setState({ error }))
       .finally(() => {
         this.setState({ isLoading: false })
-        window.scrollTo({
+        if (this.state.pictures.length > 12)
+       { window.scrollTo({
           top: document.querySelector('#imagesList').scrollHeight,
           behavior: 'smooth',
-        });
+        })}
       });
 
 
